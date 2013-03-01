@@ -30,6 +30,11 @@
 			return this.trigger('mask');
 		},
 		
+		// Edited by Dennys in 27-02-2013
+		getValue : function() {
+			return this.trigger('getValue');
+		},
+
 		init : function(settings) {
 			settings = $.extend({
 				symbol: '',
@@ -121,6 +126,12 @@
 						}
 						maskAndPosition(x, startPos);
 						markAsDirty();
+
+						// Edited by Dennys in 27-02-2013
+						if (x.value.charAt(0) == '-' && getValue() == 0) { 
+							x.value = x.value.replace('-','');
+						}
+						
 						return false;
 					} else if (k==9) { // tab key
 						if(dirty) {
@@ -192,6 +203,27 @@
 					setCursorPosition(input, startPos);
 				}
 				
+				// Edited by Dennys in 27-02-2013
+				function unMaskValue(v) {
+					v = v.replace(settings.symbol, '').replace('-','');
+					var strCheck = '0123456789';
+					var len = v.length;
+					var a = '', t = '';
+				
+					for (var i = 0; i < len; i++) {
+						if (strCheck.indexOf(v.charAt(i))!=-1) a+= v.charAt(i);
+					}
+					var n = parseFloat(a);
+					n = isNaN(n) ? 0 : n/Math.pow(10,settings.precision);
+					t = n.toFixed(settings.precision);
+					return t;
+				}
+
+				// Edited by Dennys in 27-02-2013
+				function getValue() {
+					return parseFloat(unMaskValue(input.val()));
+				}
+				
 				function mask(){
 					var value = input.val();
 					input.val(maskValue(value));
@@ -255,6 +287,9 @@
 						if(value.substr(0, settings.symbol.length) != settings.symbol){
 							value = operator + settings.symbol + value;
 						}
+						// Edited by Dennys in 27-02-2013
+						else
+							value = operator + value;
 					}
 					return value;
 				}
@@ -264,8 +299,13 @@
 						var vic = i.val();
 						if (i.val()!='' && i.val().charAt(0)=='-'){
 							return i.val().replace('-','');
-						} else{
+						} 
+						// Edited by Dennys in 27-02-2013
+						else if (getValue() != 0) {
 							return '-'+i.val();
+						} 
+						else {
+							return i.val();
 						}
 					} else {
 						return i.val();
