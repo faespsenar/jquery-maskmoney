@@ -381,7 +381,7 @@
 					input.bind('blur.maskMoney', blurEvent);
 					input.bind('focus.maskMoney', focusEvent);
 					input.bind('mask.maskMoney', mask);
-					input.bind('mask.maskMoney', getValue);
+					input.bind('getValue.maskMoney', getValue);
 				}
 			})
 		}
